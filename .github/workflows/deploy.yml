@@ -1,7 +1,7 @@
 name: Fly Deploy
 on:
   workflow_run:
-     workflows: ["Container CI"]
+     workflows: ["Docker Build"]
      types: [completed]
   workflow_dispatch:
   repository_dispatch:
