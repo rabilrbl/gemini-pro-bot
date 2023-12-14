@@ -18,7 +18,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     user = update.effective_user
     await update.message.reply_html(
         rf"Hi {user.mention_html()}!",
-        reply_markup=ForceReply(selective=True),
+        # reply_markup=ForceReply(selective=True),
     )
 
 
@@ -40,7 +40,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             if chunk.text:
                 message = chunk.text
-                message = message.replace("\`", "`")
                 if inited:
                     inited = False
                     init_msg = await init_msg.edit_text(text=message)
