@@ -3,7 +3,7 @@
   # GEMINI-PRO-BOT
   
   **A Python Telegram bot powered by Google's `gemini-pro` LLM API**
-  
+
   *This is a Python Telegram bot that uses Google's gemini-pro LLM API to generate creative text formats based on user input. It is designed to be a fun and interactive way to explore the possibilities of large language models.*
 
 </div>
@@ -42,7 +42,7 @@
 
 1. Start the bot by running the script.
    ```py
-    python main.py
+   python main.py
    ```
 2. Open the bot in your Telegram chat.
 3. Send any text message to the bot.
