@@ -5,6 +5,7 @@ import google.generativeai as genai
 from telegram import Update, ForceReply
 from telegram.ext import ContextTypes, CommandHandler, MessageHandler, filters, Application
 
+from telegram.constants import ChatAction
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -32,6 +33,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     init_msg = await update.message.reply_text(text="Generating...", reply_to_message_id=update.message.message_id)
     inited = True
+    await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     response = model.generate_content(text, stream=True)
     
