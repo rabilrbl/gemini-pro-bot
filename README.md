@@ -1,8 +1,12 @@
-## README.md
+<div align="center">
 
-**A Python Telegram bot powered by Google's `gemini-pro` LLM API**
+  # GEMINI-PRO-BOT
+  
+  **A Python Telegram bot powered by Google's `gemini-pro` LLM API**
+  
+  *This is a Python Telegram bot that uses Google's gemini-pro LLM API to generate creative text formats based on user input. It is designed to be a fun and interactive way to explore the possibilities of large language models.*
 
-This is a Python Telegram bot that uses Google's gemini-pro LLM API to generate creative text formats based on user input. It is designed to be a fun and interactive way to explore the possibilities of large language models.
+</div>
 
 ### Features
 
