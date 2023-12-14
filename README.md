@@ -16,7 +16,7 @@ This is a Python Telegram bot that uses Google's Bard API to generate creative t
 
 ### Requirements
 
-* Python 3.7+
+* Python 3.10+
 * pipenv (recommended)
 * Telegram Bot API token
 * Google Bard API key
