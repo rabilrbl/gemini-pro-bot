@@ -1,0 +1,25 @@
+name: Fly Deploy
+on:
+  workflow_run:
+     workflows: ["Container CI"]
+     types: [completed]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [deploy]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+jobs:
+  deploy:
+    if: github.event_name != 'pull_request'
+    name: Deploy app
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
