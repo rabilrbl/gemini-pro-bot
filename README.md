@@ -1,8 +1,8 @@
 ## README.md
 
-**A Python Telegram bot powered by Google's Bard API**
+**A Python Telegram bot powered by Google's `gemini-pro` LLM API**
 
-This is a Python Telegram bot that uses Google's Bard API to generate creative text formats based on user input. It is designed to be a fun and interactive way to explore the possibilities of large language models.
+This is a Python Telegram bot that uses Google's gemini-pro LLM API to generate creative text formats based on user input. It is designed to be a fun and interactive way to explore the possibilities of large language models.
 
 ### Features
 
@@ -17,9 +17,8 @@ This is a Python Telegram bot that uses Google's Bard API to generate creative t
 ### Requirements
 
 * Python 3.10+
-* pipenv (recommended)
 * Telegram Bot API token
-* Google Bard API key
+* Google `gemini-pro` API key
 * dotenv (for environment variables)
 
 ### Installation
