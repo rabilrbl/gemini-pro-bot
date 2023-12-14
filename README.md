@@ -59,7 +59,3 @@ This bot is still under development and may sometimes provide nonsensical or ina
 ### License
 
 This is a free and open-source project released under the GNU Affero General Public License v3.0 license. See the LICENSE file for details.
-
-**Note:** This is a basic README.md file. You can add more information about the project, such as screenshots, examples of generated text, and links to the relevant documentation.
-
-I hope this helps! Let me know if you have any other questions.
