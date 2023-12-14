@@ -41,7 +41,7 @@
 ### Usage
 
 1. Start the bot by running the script.
-   ```py
+   ```shell
    python main.py
    ```
 2. Open the bot in your Telegram chat.
