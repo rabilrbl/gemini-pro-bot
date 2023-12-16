@@ -86,6 +86,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
             raise NetworkError("Looks like you're network is down. Please try again later.")
         except IndexError:
             await init_msg.reply_text("The bot could not generate a response. Please start a new chat with /new")
+            chat.rewind() # Rewind the chat session to prevent the bot from getting stuck
             await response.resolve() # Resolve the response to prevent the chat session from getting stuck
             continue
         except Exception as e:
