@@ -1,10 +1,11 @@
 import asyncio
 import os
 import google.generativeai as genai
-
 from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler, MessageHandler, filters, Application
-from telegram.constants import ChatAction
+from telegram.error import NetworkError, BadRequest
+from telegram.constants import ChatAction, ParseMode
+from html_format import format_message
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -14,7 +15,6 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 model = genai.GenerativeModel('gemini-pro')
 
 chats: dict[int, genai.ChatSession] = {}
-
 
 async def new_chat(chat_id: int):
     chats[chat_id] = model.start_chat()
@@ -56,32 +56,33 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
         await new_chat(update.message.chat.id)
     text = update.message.text
     init_msg = await update.message.reply_text(text="Generating...", reply_to_message_id=update.message.message_id)
-    inited = True
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     chat = chats[update.message.chat.id] # Get the chat session for this chat
     response = await chat.send_message_async(text, stream=True) # Generate a response
-
+    full_plain_message = ""
     # Stream the responses
     async for chunk in response:
         try:
             if chunk.text:
-                message = chunk.text
-                if inited:
-                    inited = False
-                    init_msg = await init_msg.edit_text(text=message)
-                else:
-                    init_msg = await init_msg.edit_text(text=init_msg.text + message)
+                full_plain_message += (chunk.text)
+                message = format_message(full_plain_message)
+                init_msg = await init_msg.edit_text(text=message, parse_mode=ParseMode.HTML, disable_web_page_preview=True)
+        except BadRequest:
+            await response.resolve() # Resolve the response to prevent the chat session from getting stuck
+            continue
+        except NetworkError:
+            raise NetworkError("Looks like you're network is down. Please try again later.")
         except IndexError:
-            if inited:
-                await init_msg.edit_text("The bot could not generate a response. Please start a new chat with /new")
-            else:
-                await init_msg.reply_text("The bot could not generate a response. Please start a new chat with /new")
+            await init_msg.reply_text("The bot could not generate a response. Please start a new chat with /new")
+            await response.resolve() # Resolve the response to prevent the chat session from getting stuck
             continue
         except Exception as e:
             print(e)
             if chunk.text:
-                init_msg = await update.message.reply_text(text=chunk.text, reply_to_message_id=init_msg.message_id)
+                full_plain_message = chunk.text
+                message = format_message(full_plain_message)
+                init_msg = await update.message.reply_text(text=message, parse_mode=ParseMode.HTML,reply_to_message_id=init_msg.message_id, disable_web_page_preview=True)
         await asyncio.sleep(0.1)
         
 def main() -> None:
