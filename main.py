@@ -1,6 +1,7 @@
 import asyncio
 import os
 import google.generativeai as genai
+from google.generativeai.types.generation_types import StopCandidateException
 from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler, MessageHandler, filters, Application
 from telegram.error import NetworkError, BadRequest
@@ -68,6 +69,10 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
                 full_plain_message += (chunk.text)
                 message = format_message(full_plain_message)
                 init_msg = await init_msg.edit_text(text=message, parse_mode=ParseMode.HTML, disable_web_page_preview=True)
+        except StopCandidateException as sce:
+            await init_msg.reply_text("The model unexpectedly stopped generating.")
+            chat.rewind() # Rewind the chat session to prevent the bot from getting stuck
+            continue
         except BadRequest:
             await response.resolve() # Resolve the response to prevent the chat session from getting stuck
             continue
