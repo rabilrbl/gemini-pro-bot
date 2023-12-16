@@ -36,6 +36,12 @@ def apply_monospace(text: str) -> str:
     return replaced_text
 
 
+def apply_link(text: str) -> str:
+    # Pattern to match all markdown link [.*](.*)
+    pattern = r'\[(.*?)\]\((.*?)\)'
+    replaced_text = re.sub(pattern, r'<a href="\2">\1</a>', text)
+    return replaced_text
+
 # def apply_header(text: str) -> str:
 #     # Pattern to match "### <any_text>"
 #     pattern = r'### (.*)'
@@ -49,5 +55,6 @@ def format_message(message: str) -> str:
     message = apply_hand_points(message)
     message = apply_code(message)
     message = apply_monospace(message)
+    message = apply_link(message)
     # message = apply_header(message)
     return message
