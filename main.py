@@ -20,7 +20,7 @@ chats: dict[int, genai.ChatSession] = {}
 async def new_chat(chat_id: int):
     chats[chat_id] = model.start_chat()
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     await update.message.reply_html(
@@ -29,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
 
-async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_text ="""
 Basic commands:
@@ -44,7 +44,7 @@ Send a message to the bot to generate a response.
     await update.message.reply_text(help_text)
     
 
-async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+async def newchat_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a new chat session."""
     init_msg = await update.message.reply_text(text="Starting new chat session...", reply_to_message_id=update.message.message_id)
     await new_chat(update.message.chat.id)
@@ -52,7 +52,7 @@ async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     
 
 # Define the function that will handle incoming messages
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
     if update.message.chat.id not in chats:
         await new_chat(update.message.chat.id)
     text = update.message.text
