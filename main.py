@@ -60,7 +60,13 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     chat = chats[update.message.chat.id] # Get the chat session for this chat
-    response = await chat.send_message_async(text, stream=True) # Generate a response
+    response = None
+    try:
+        response = await chat.send_message_async(text, stream=True) # Generate a response
+    except StopCandidateException as sce:
+        await init_msg.edit_text("The model unexpectedly stopped generating.")
+        chat.rewind() # Rewind the chat session to prevent the bot from getting stuck
+        return
     full_plain_message = ""
     # Stream the responses
     async for chunk in response:
@@ -70,7 +76,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
                 message = format_message(full_plain_message)
                 init_msg = await init_msg.edit_text(text=message, parse_mode=ParseMode.HTML, disable_web_page_preview=True)
         except StopCandidateException as sce:
-            await init_msg.reply_text("The model unexpectedly stopped generating.")
+            await init_msg.edit_text("The model unexpectedly stopped generating.")
             chat.rewind() # Rewind the chat session to prevent the bot from getting stuck
             continue
         except BadRequest:
