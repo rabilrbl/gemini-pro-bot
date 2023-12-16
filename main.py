@@ -2,9 +2,8 @@ import asyncio
 import os
 import google.generativeai as genai
 
-from telegram import Update, ForceReply
+from telegram import Update
 from telegram.ext import ContextTypes, CommandHandler, MessageHandler, filters, Application
-
 from telegram.constants import ChatAction
 from dotenv import load_dotenv
 load_dotenv()
