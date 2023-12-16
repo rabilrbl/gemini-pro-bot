@@ -14,6 +14,12 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 model = genai.GenerativeModel('gemini-pro')
 
+chats: dict[int, genai.ChatSession] = {}
+
+
+async def new_chat(chat_id: int):
+    chats[chat_id] = model.start_chat()
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -25,20 +31,40 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
-    await update.message.reply_text("Help!")
+    help_text ="""
+Basic commands:
+/start - Start the bot
+/help - Get help. Shows this message
+
+Chat commands:
+/new - Start a new chat session (model will forget previously generated messages)
+
+Send a message to the bot to generate a response.
+"""
+    await update.message.reply_text(help_text)
+    
+
+async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Start a new chat session."""
+    init_msg = await update.message.reply_text(text="Starting new chat session...", reply_to_message_id=update.message.message_id)
+    await new_chat(update.message.chat.id)
+    await init_msg.edit_text("New chat session started.")
     
 
 # Define the function that will handle incoming messages
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.message.chat.id not in chats:
+        await new_chat(update.message.chat.id)
     text = update.message.text
     init_msg = await update.message.reply_text(text="Generating...", reply_to_message_id=update.message.message_id)
     inited = True
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
-    response = model.generate_content(text, stream=True)
-    
+    chat = chats[update.message.chat.id] # Get the chat session for this chat
+    response = await chat.send_message_async(text, stream=True) # Generate a response
+
     # Stream the responses
-    for chunk in response:
+    async for chunk in response:
         try:
             if chunk.text:
                 message = chunk.text
@@ -47,6 +73,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     init_msg = await init_msg.edit_text(text=message)
                 else:
                     init_msg = await init_msg.edit_text(text=init_msg.text + message)
+        except IndexError:
+            if inited:
+                await init_msg.edit_text("The bot could not generate a response. Please start a new chat with /new")
+            else:
+                await init_msg.reply_text("The bot could not generate a response. Please start a new chat with /new")
+            continue
         except Exception as e:
             print(e)
             if chunk.text:
@@ -61,6 +93,7 @@ def main() -> None:
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(CommandHandler("new", newchat_command))
 
     # on non command i.e message - echo the message on Telegram
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
