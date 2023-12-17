@@ -2,7 +2,7 @@ import asyncio
 import os
 import google.generativeai as genai
 from gemini_pro_bot.llm import model
-from google.generativeai.types.generation_types import StopCandidateException
+from google.generativeai.types.generation_types import StopCandidateException, BlockedPromptException
 from telegram import Update
 from telegram.ext import (
     ContextTypes,
@@ -76,8 +76,18 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
             text, stream=True
         )  # Generate a response
     except StopCandidateException as sce:
+        print("Prompt: ", text, " was stopped. User: ", update.message.from_user)
+        print(sce)
         await init_msg.edit_text("The model unexpectedly stopped generating.")
         chat.rewind()  # Rewind the chat session to prevent the bot from getting stuck
+        return
+    except BlockedPromptException as bpe:
+        print("Prompt: ", text, " was blocked. User: ", update.message.from_user)
+        print(bpe)
+        await init_msg.edit_text("Blocked due to safety concerns.")
+        if response:
+            # Resolve the response to prevent the chat session from getting stuck
+            await response.resolve()
         return
     full_plain_message = ""
     # Stream the responses
