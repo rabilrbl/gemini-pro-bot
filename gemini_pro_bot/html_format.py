@@ -77,13 +77,13 @@ def apply_header(text: str) -> str:
 def format_message(message: str) -> str:
     """Format the message to HTML."""
     message = escape_html(message)
-    message = apply_bold(message)
-    message = apply_italic(message)
-    message = apply_hand_points(message)
-    message = apply_code(message)
-    message = apply_monospace(message)
-    message = apply_underline(message)
-    message = apply_strikethrough(message)
     message = apply_link(message)
     message = apply_header(message)
+    message = apply_code(message)
+    message = apply_bold(message)
+    message = apply_italic(message)
+    message = apply_underline(message)
+    message = apply_strikethrough(message)
+    message = apply_monospace(message)
+    message = apply_hand_points(message)
     return message
