@@ -13,7 +13,7 @@ def apply_hand_points(text: str) -> str:
     """Replace markdown bullet points with hand emojis."""
     pattern = r"(?<=\n)\*\s(?!\*)|^\*\s(?!\*)"
 
-    replaced_text = re.sub(pattern, "👉", text)
+    replaced_text = re.sub(pattern, "👉 ", text)
 
     return replaced_text
 
