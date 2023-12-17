@@ -51,7 +51,7 @@ async def newchat_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         text="Starting new chat session...",
         reply_to_message_id=update.message.message_id,
     )
-    await new_chat(update.message.chat.id)
+    new_chat(update.message.chat.id)
     await init_msg.edit_text("New chat session started.")
 
 
