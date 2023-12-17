@@ -25,6 +25,31 @@
 * Google `gemini-pro` API key
 * dotenv (for environment variables)
 
+
+### Docker
+
+#### GitHub Container Registry
+Simply run the following command to run the pre-built image from GitHub Container Registry:
+
+```shell
+docker run --env-file .env ghcr.io/rabilrbl/gemini-pro-bot:latest
+```
+
+Update the image with:
+```shell
+docker pull ghcr.io/rabilrbl/gemini-pro-bot:latest
+```
+
+#### Build
+Build the image with:
+```shell
+docker build -t gemini-pro-bot .
+```
+Once the image is built, you can run it with:
+```shell
+docker run --env-file .env gemini-pro-bot
+```
+
 ### Installation
 
 1. Clone this repository.
@@ -47,6 +72,15 @@
 2. Open the bot in your Telegram chat.
 3. Send any text message to the bot.
 4. The bot will generate creative text formats based on your input and stream the results back to you.
+
+### Bot Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `/start` | Greet the bot and get started. |
+| `/help` | Get information about the bot's capabilities. |
+| `/new` | Start a new chat session. |
+
 
 ### Contributing
 
