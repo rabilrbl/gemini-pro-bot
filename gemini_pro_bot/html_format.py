@@ -69,7 +69,7 @@ def apply_strikethrough(text: str) -> str:
 
 def apply_header(text: str) -> str:
     """Replace markdown header # with HTML header tags."""
-    pattern = r"#{1,6} (.*)"
+    pattern = r"#{2,6} (.*)"
     replaced_text = re.sub(pattern, r"<b><u>\1</u></b>", text)
     return replaced_text
 
