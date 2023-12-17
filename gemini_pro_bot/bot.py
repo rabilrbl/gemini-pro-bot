@@ -113,6 +113,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE):
                 "Looks like you're network is down. Please try again later."
             )
         except IndexError:
+            await init_msg.reply_text("Some index error occurred. This response is not supported.")
             continue
         except Exception as e:
             print(e)
