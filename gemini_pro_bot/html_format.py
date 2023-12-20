@@ -34,8 +34,8 @@ def apply_italic(text: str) -> str:
 
 def apply_code(text: str) -> str:
     """Replace markdown code ``` with HTML code tags."""
-    pattern = r"```[\w]*\n((?:.|[\n])*?)\n```"
-    replaced_text = re.sub(pattern, r"<pre>\1</pre>", text)
+    pattern = r"```([\w]*?)\n([\s\S]*?)```"
+    replaced_text = re.sub(pattern, r"<pre lang='\1'>\2</pre>", text, flags=re.DOTALL)
     return replaced_text
 
 
@@ -69,9 +69,18 @@ def apply_strikethrough(text: str) -> str:
 
 def apply_header(text: str) -> str:
     """Replace markdown header # with HTML header tags."""
-    pattern = r"#{2,6} (.*)"
-    replaced_text = re.sub(pattern, r"<b><u>\1</u></b>", text)
-    return replaced_text
+    lines = text.split('\n')
+    in_code_block = False
+
+    for i, line in enumerate(lines):
+        if line.startswith('```'):
+            in_code_block = not in_code_block
+
+        if not in_code_block:
+            pattern = r"^(#{1,6})\s+(.*)"
+            lines[i] = re.sub(pattern, r"<b><u>\2</u></b>", line, flags=re.DOTALL)
+
+    return '\n'.join(lines)
 
 
 def format_message(message: str) -> str:
