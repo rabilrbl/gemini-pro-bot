@@ -16,7 +16,8 @@
 * Easy to use with simple commands:
     * `/start`: Greet the bot and get started.
     * `/help`: Get information about the bot's capabilities.
-    * Send any text message to trigger the generation process.
+* Send any text message to trigger the generation process.
+* Send any image with captions to generate responses based on the image. (Multi-modal support)
 
 ### Requirements
 
