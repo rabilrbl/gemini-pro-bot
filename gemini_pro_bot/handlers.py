@@ -113,7 +113,7 @@ async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
             await init_msg.reply_text(
                 "Some index error occurred. This response is not supported."
             )
-            chat.rewind()  # Rewind the chat session to prevent the bot from getting stuck
+            await response.resolve()
             continue
         except Exception as e:
             print(e)
