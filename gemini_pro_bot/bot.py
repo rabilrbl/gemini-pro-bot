@@ -6,6 +6,7 @@ from telegram.ext import (
     filters,
     Application,
 )
+from gemini_pro_bot.filters import AuthorizedUserFilter
 from dotenv import load_dotenv
 from gemini_pro_bot.handlers import (
     start,
@@ -24,18 +25,18 @@ def start_bot() -> None:
     application = Application.builder().token(os.getenv("BOT_TOKEN")).build()
 
     # on different commands - answer in Telegram
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("new", newchat_command))
+    application.add_handler(CommandHandler("start", start, filters=AuthorizedUserFilter()))
+    application.add_handler(CommandHandler("help", help_command, filters=AuthorizedUserFilter()))
+    application.add_handler(CommandHandler("new", newchat_command, filters=AuthorizedUserFilter()))
 
     # Any text message is sent to LLM to generate a response
     application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
+        MessageHandler( ~filters.COMMAND & filters.TEXT & AuthorizedUserFilter() , handle_message)
     )
 
     # Any image is sent to LLM to generate a response
     application.add_handler(
-        MessageHandler(filters.PHOTO & ~filters.COMMAND, handle_image)
+        MessageHandler( ~filters.COMMAND & filters.PHOTO & AuthorizedUserFilter(), handle_image)
     )
 
     # Run the bot until the user presses Ctrl-C
