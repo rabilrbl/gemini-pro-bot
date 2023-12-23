@@ -15,10 +15,8 @@ from gemini_pro_bot.html_format import format_message
 import PIL.Image as load_image
 from io import BytesIO
 
-chats: dict[int, genai.ChatSession] = {}
-
-def new_chat(chat_id: int) -> None:
-    chats[chat_id] = model.start_chat()
+def new_chat(context: ContextTypes.DEFAULT_TYPE) -> None:
+    context.chat_data["chat"] = model.start_chat()
 
 
 async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
@@ -45,33 +43,33 @@ Send a message to the bot to generate a response.
     await update.message.reply_text(help_text)
 
 
-async def newchat_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a new chat session."""
     init_msg = await update.message.reply_text(
         text="Starting new chat session...",
         reply_to_message_id=update.message.message_id,
     )
-    new_chat(update.message.chat.id)
+    new_chat(context)
     await init_msg.edit_text("New chat session started.")
 
 
 # Define the function that will handle incoming messages
-async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming text messages from users.
 
     Checks if a chat session exists for the user, initializes a new session if not.
     Sends the user's message to the chat session to generate a response.
     Streams the response back to the user, handling any errors.
     """
-    if update.message.chat.id not in chats:
-        new_chat(update.message.chat.id)
+    if context.chat_data.get("chat") is None:
+        new_chat(context)
     text = update.message.text
     init_msg = await update.message.reply_text(
         text="Generating...", reply_to_message_id=update.message.message_id
     )
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
-    chat = chats[update.message.chat.id]  # Get the chat session for this chat
+    chat = context.chat_data.get("chat")  # Get the chat session for this chat
     response = None
     try:
         response = await chat.send_message_async(
