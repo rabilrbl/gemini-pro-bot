@@ -20,6 +20,7 @@
     * `/help`: Get information about the bot's capabilities.
 * Send any text message to trigger the generation process.
 * Send any image with captions to generate responses based on the image. (Multi-modal support)
+* User authentication to prevent unauthorized access by setting `AUTHORIZED_USERS` in the `.env` file (optional).
 
 ### Requirements
 
@@ -62,6 +63,7 @@ docker run --env-file .env gemini-pro-bot
 3. Create a `.env` file and add the following environment variables:
     * `BOT_TOKEN`: Your Telegram Bot API token. You can get one by talking to [@BotFather](https://t.me/BotFather).
     * `GOOGLE_API_KEY`: Your Google Bard API key. You can get one from [Google AI Studio](https://makersuite.google.com/).
+    * `AUTHORIZED_USERS`: A comma-separated list of Telegram usernames or user IDs that are authorized to access the bot. (optional) Example value: `shonan23,1234567890`
 4. Run the bot:
     * `python main.py` (if not using pipenv)
     * `pipenv run python main.py` (if using pipenv)
@@ -75,6 +77,11 @@ docker run --env-file .env gemini-pro-bot
 2. Open the bot in your Telegram chat.
 3. Send any text message to the bot.
 4. The bot will generate creative text formats based on your input and stream the results back to you.
+5. If you want to restrict public access to the bot, you can set `AUTHORIZED_USERS` in the `.env` file to a comma-separated list of Telegram user IDs. Only these users will be able to access the bot.
+    Example:
+    ```shell
+    AUTHORIZED_USERS=shonan23,1234567890
+    ```
 
 ### Bot Commands
 
