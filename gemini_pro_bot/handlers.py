@@ -57,7 +57,12 @@ async def newchat_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 # Define the function that will handle incoming messages
 async def handle_message(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle incoming messages and generate a response."""
+    """Handles incoming text messages from users.
+
+    Checks if a chat session exists for the user, initializes a new session if not.
+    Sends the user's message to the chat session to generate a response.
+    Streams the response back to the user, handling any errors.
+    """
     if update.message.chat.id not in chats:
         new_chat(update.message.chat.id)
     text = update.message.text
