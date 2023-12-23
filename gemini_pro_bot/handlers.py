@@ -1,6 +1,5 @@
 import asyncio
 from gemini_pro_bot.llm import model, img_model
-import google.generativeai as genai
 from google.generativeai.types.generation_types import (
     StopCandidateException,
     BlockedPromptException,
@@ -14,6 +13,7 @@ from telegram.constants import ChatAction, ParseMode
 from gemini_pro_bot.html_format import format_message
 import PIL.Image as load_image
 from io import BytesIO
+
 
 def new_chat(context: ContextTypes.DEFAULT_TYPE) -> None:
     context.chat_data["chat"] = model.start_chat()
@@ -131,8 +131,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 )
         # Sleep for a bit to prevent the bot from getting rate-limited
         await asyncio.sleep(0.1)
-        
-        
+
+
 async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle incoming images with captions and generate a response."""
     init_msg = await update.message.reply_text(

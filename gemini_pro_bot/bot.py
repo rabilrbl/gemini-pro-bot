@@ -32,11 +32,11 @@ def start_bot() -> None:
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message)
     )
-    
+
     # Any image is sent to LLM to generate a response
     application.add_handler(
         MessageHandler(filters.PHOTO & ~filters.COMMAND, handle_image)
     )
-    
+
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)

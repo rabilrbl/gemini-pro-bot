@@ -69,18 +69,18 @@ def apply_strikethrough(text: str) -> str:
 
 def apply_header(text: str) -> str:
     """Replace markdown header # with HTML header tags."""
-    lines = text.split('\n')
+    lines = text.split("\n")
     in_code_block = False
 
     for i, line in enumerate(lines):
-        if line.startswith('```'):
+        if line.startswith("```"):
             in_code_block = not in_code_block
 
         if not in_code_block:
             pattern = r"^(#{1,6})\s+(.*)"
             lines[i] = re.sub(pattern, r"<b><u>\2</u></b>", line, flags=re.DOTALL)
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def format_message(message: str) -> str:
