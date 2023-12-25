@@ -31,12 +31,12 @@ def start_bot() -> None:
 
     # Any text message is sent to LLM to generate a response
     application.add_handler(
-        MessageHandler( ~filters.COMMAND & filters.TEXT & AuthorizedUserFilter() , handle_message)
+        MessageHandler( AuthorizedUserFilter() & ~filters.COMMAND & filters.TEXT, handle_message)
     )
 
     # Any image is sent to LLM to generate a response
     application.add_handler(
-        MessageHandler( ~filters.COMMAND & filters.PHOTO & AuthorizedUserFilter(), handle_image)
+        MessageHandler( AuthorizedUserFilter() & ~filters.COMMAND & filters.PHOTO, handle_image)
     )
 
     # Run the bot until the user presses Ctrl-C
