@@ -150,7 +150,7 @@ def apply_exclude_code(text: str) -> str:
     """Apply text formatting to non-code lines.
 
     Iterates through each line, checking if it is in a code block.
-    If not, applies header, bold, italic, underline, strikethrough, monospace, and hand-point
+    If not, applies header, link, bold, italic, underline, strikethrough, monospace, and hand-point
     text formatting.
     """
     lines = text.split("\n")
@@ -161,20 +161,21 @@ def apply_exclude_code(text: str) -> str:
             in_code_block = not in_code_block
 
         if not in_code_block:
-            message = lines[i]
-            message = apply_header(message)
-            message = apply_bold(message)
-            message = apply_italic(message)
-            message = apply_underline(message)
-            message = apply_strikethrough(message)
-            message = apply_monospace(message)
-            message = apply_hand_points(message)
-            lines[i] = message
+            formatted_line = lines[i]
+            formatted_line = apply_header(formatted_line)
+            formatted_line = apply_link(formatted_line)
+            formatted_line = apply_bold(formatted_line)
+            formatted_line = apply_italic(formatted_line)
+            formatted_line = apply_underline(formatted_line)
+            formatted_line = apply_strikethrough(formatted_line)
+            formatted_line = apply_monospace(formatted_line)
+            formatted_line = apply_hand_points(formatted_line)
+            lines[i] = formatted_line
 
     return "\n".join(lines)
 
 
-def format_message(message: str) -> str:
+def format_message(text: str) -> str:
     """Format the given message text from markdown to HTML.
 
     Escapes HTML characters, applies link, code, and other rich text formatting,
@@ -186,8 +187,7 @@ def format_message(message: str) -> str:
     Returns:
       str: The formatted HTML string.
     """
-    message = escape_html(message)
-    message = apply_link(message)
-    message = apply_exclude_code(message)
-    message = apply_code(message)
-    return message
+    formatted_text = escape_html(text)
+    formatted_text = apply_exclude_code(formatted_text)
+    formatted_text = apply_code(formatted_text)
+    return formatted_text
