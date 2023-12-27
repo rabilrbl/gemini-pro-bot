@@ -91,6 +91,10 @@ docker run --env-file .env gemini-pro-bot
 | `/help` | Get information about the bot's capabilities. |
 | `/new` | Start a new chat session. |
 
+### Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=rabilrbl/gemini-pro-bot&type=Date)](https://star-history.com/#rabilrbl/gemini-pro-bot&Date)
+
 
 ### Contributing
 
