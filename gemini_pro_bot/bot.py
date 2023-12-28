@@ -3,10 +3,9 @@ from telegram import Update
 from telegram.ext import (
     CommandHandler,
     MessageHandler,
-    filters,
     Application,
 )
-from gemini_pro_bot.filters import AuthorizedUserFilter
+from gemini_pro_bot.filters import AuthFilter, MessageFilter, PhotoFilter
 from dotenv import load_dotenv
 from gemini_pro_bot.handlers import (
     start,
@@ -25,19 +24,15 @@ def start_bot() -> None:
     application = Application.builder().token(os.getenv("BOT_TOKEN")).build()
 
     # on different commands - answer in Telegram
-    application.add_handler(CommandHandler("start", start, filters=AuthorizedUserFilter()))
-    application.add_handler(CommandHandler("help", help_command, filters=AuthorizedUserFilter()))
-    application.add_handler(CommandHandler("new", newchat_command, filters=AuthorizedUserFilter()))
+    application.add_handler(CommandHandler("start", start, filters=AuthFilter))
+    application.add_handler(CommandHandler("help", help_command, filters=AuthFilter))
+    application.add_handler(CommandHandler("new", newchat_command, filters=AuthFilter))
 
     # Any text message is sent to LLM to generate a response
-    application.add_handler(
-        MessageHandler( AuthorizedUserFilter() & ~filters.COMMAND & filters.TEXT, handle_message)
-    )
+    application.add_handler(MessageHandler(MessageFilter, handle_message))
 
     # Any image is sent to LLM to generate a response
-    application.add_handler(
-        MessageHandler( AuthorizedUserFilter() & ~filters.COMMAND & filters.PHOTO, handle_image)
-    )
+    application.add_handler(MessageHandler(PhotoFilter, handle_image))
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)
