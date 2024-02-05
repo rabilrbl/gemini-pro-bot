@@ -7,7 +7,7 @@ google-api-core==2.16.2
 google-auth==2.27.0
 google-generativeai==0.3.2
 googleapis-common-protos==1.62.0
-grpcio==1.60.0
+grpcio==1.60.1
 grpcio-status==1.60.0
 h11==0.14.0
 httpcore==1.0.2
