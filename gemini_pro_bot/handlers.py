@@ -64,8 +64,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     if context.chat_data.get("chat") is None:
         new_chat(context)
     text = update.message.text
+    words = text.split()
+
+    if words:
+        if words[0] != "гпт":
+            return
+
+    print("User: ", update.message.from_user, " Message: ", text)
     init_msg = await update.message.reply_text(
-        text="Generating...", reply_to_message_id=update.message.message_id
+        text="Думаю над ответом...", reply_to_message_id=update.message.message_id
     )
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
@@ -135,10 +142,19 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
 async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle incoming images with captions and generate a response."""
-    init_msg = await update.message.reply_text(
-        text="Generating...", reply_to_message_id=update.message.message_id
-    )
     images = update.message.photo
+    caption = update.message.caption
+
+    if caption == None:
+        return
+    elif caption != "гпт":
+        return
+
+    print("User: ", update.message.from_user, " Caption: ", caption)
+
+    init_msg = await update.message.reply_text(
+        text="Думаю...", reply_to_message_id=update.message.message_id
+    )
     unique_images: dict = {}
     for img in images:
         file_id = img.file_id[:-7]
@@ -150,10 +166,12 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     file = await file_list[0].get_file()
     a_img = load_image.open(BytesIO(await file.download_as_bytearray()))
     prompt = None
-    if update.message.caption:
-        prompt = update.message.caption
-    else:
-        prompt = "Analyse this image and generate response"
+    # if update.message.caption:
+    #     prompt = update.message.caption
+    # else:
+    #     prompt = "Проанализируй это изображение и сгенерируй ответ. Отвечай только на русском языке. Ответь как можно подробнее."
+
+    prompt = "Проанализируй это изображение и сгенерируй ответ. Отвечай только на русском языке. Ответь как можно подробнее."
     response = await img_model.generate_content_async([prompt, a_img], stream=True)
     full_plain_message = ""
     async for chunk in response:
