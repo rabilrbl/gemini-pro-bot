@@ -147,7 +147,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
     if caption == None:
         return
-    elif caption != "гпт":
+    elif caption.split()[0] != "гпт":
         return
 
     print("User: ", update.message.from_user.username, " Caption:", caption)
@@ -166,12 +166,10 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     file = await file_list[0].get_file()
     a_img = load_image.open(BytesIO(await file.download_as_bytearray()))
     prompt = None
-    # if update.message.caption:
-    #     prompt = update.message.caption
-    # else:
-    #     prompt = "Проанализируй это изображение и сгенерируй ответ. Отвечай только на русском языке. Ответь как можно подробнее."
-
-    prompt = "Проанализируй это изображение и сгенерируй ответ. Отвечай только на русском языке. Ответь как можно подробнее."
+    if update.message.caption != "гпт":
+        prompt = update.message.caption
+    else:
+        prompt = "Изучи данное изображение или фотографию и предоставь детальный анализ, описывающий его содержание, контекст и возможные варианты интерпретации. Обрати внимание на элементы композиции, цветовую палитру, эмоциональную атмосферу и любые другие заметные особенности. Твой ответ должен быть структурированным и содержательным, а также включать в себя ваше собственное творческое понимание изображения. Отвечай только на русском языке."
     response = await img_model.generate_content_async([prompt, a_img], stream=True)
     full_plain_message = ""
     async for chunk in response:
