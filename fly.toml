@@ -12,7 +12,7 @@ kill_timeout = '5s'
   auto_rollback = true
 
 [build]
-  image = 'ghcr.io/rabilrbl/gemini-pro-bot:latest'
+  image = 'ghcr.io/uqe/gemini-pro-bot:latest'
 
 [deploy]
   strategy = 'immediate'
