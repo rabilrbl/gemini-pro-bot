@@ -3,6 +3,7 @@ from gemini_pro_bot.llm import model, img_model
 from google.generativeai.types.generation_types import (
     StopCandidateException,
     BlockedPromptException,
+    BrokenResponseError,
 )
 from telegram import Update
 from telegram.ext import (
@@ -82,7 +83,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         response = await chat.send_message_async(
             text, stream=True
         )  # Generate a response
-    except StopCandidateException as sce:
+    except (BrokenResponseError, StopCandidateException) as sce:
         print("Prompt: ", text, " was stopped. User: ", update.message.from_user)
         print(sce)
         await init_msg.edit_text("The model unexpectedly stopped generating.")
