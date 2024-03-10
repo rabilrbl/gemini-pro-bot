@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from gemini_pro_bot.llm import model, img_model
 from google.generativeai.types.generation_types import (
     StopCandidateException,
@@ -72,6 +73,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             return
 
     print("User: ", update.message.from_user.username, " Message:", text)
+    logging.info(f"User: {update.message.from_user.username} Message: {text}")
     init_msg = await update.message.reply_text(
         text="Думаю над ответом...", reply_to_message_id=update.message.message_id
     )
@@ -152,6 +154,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
         return
 
     print("User: ", update.message.from_user.username, " Caption:", caption)
+    logging.info(f"User: {update.message.from_user.username} Caption: {caption}")
 
     init_msg = await update.message.reply_text(
         text="Думаю...", reply_to_message_id=update.message.message_id
