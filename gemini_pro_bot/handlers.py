@@ -82,10 +82,11 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     chat = context.chat_data.get("chat")  # Get the chat session for this chat
+    clean_text = text.replace("гпт", "").strip()
     response = None
     try:
         response = await chat.send_message_async(
-            text, stream=True
+            clean_text, stream=True
         )  # Generate a response
     except (BrokenResponseError, StopCandidateException) as sce:
         print("Prompt: ", text, " was stopped. User: ", update.message.from_user)
@@ -173,7 +174,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     a_img = load_image.open(BytesIO(await file.download_as_bytearray()))
     prompt = None
     if update.message.caption.lower() != "гпт":
-        prompt = update.message.caption
+        prompt = update.message.caption.replace("гпт", "").strip()
     else:
         # prompt = "Изучи данное изображение или фотографию и предоставь детальный анализ, описывающий его содержание, контекст и возможные варианты интерпретации. Обрати внимание на элементы композиции, цветовую палитру, эмоциональную атмосферу и любые другие заметные особенности. Твой ответ должен быть структурированным и содержательным, а также включать в себя ваше собственное творческое понимание изображения. Отвечай только на русском языке."
         prompt = "Изучи данное изображение или фотографию и напиши подробный текстовый описательный анализ этого изображения, используя русский язык. Укажи, что изображено на картинке, какие цвета и формы преобладают, какое настроение или атмосфера создаются. Если на изображении есть люди, животные или предметы, опиши их внешний вид, действия и взаимоотношения, где сделана фотография и так далее. Твой ответ должен быть структурированным и содержательным. Не пиши свое мнение или оценку изображения, а только факты и детали."
