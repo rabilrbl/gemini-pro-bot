@@ -27,7 +27,7 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     await update.message.reply_html(
-        f"Hi {user.mention_html()}!\n\nStart sending messages with me to generate a response.\n\nSend /new to start a new chat session.",
+        f"Привет, {user.mention_html()}!\n\nОтправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «гпт, как правильно сварить яйцо?»\n\nОтправьте /help, чтобы получить помощь.",
         # reply_markup=ForceReply(selective=True),
     )
 
@@ -35,14 +35,14 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_text = """
-Основные команды:
-/start — Запустить бота
-/help — Получить помощь. Показывает это сообщение
+<b>Основные команды:</b>
+/start — запустить бота
+/help — получить помощь. Показывает это сообщение
 
-Команды чата:
-/new — начать новую сессию чата (модель забудет ранее созданные сообщения).
+<b>Команды чата:</b>
+/new — начать новую сессию чата (модель забудет предыдущий контекст).
 
-Отправьте сообщение боту начиная со слова "гпт", чтобы сгенерировать ответ. Например: "гпт, как правильно сварить яйцо?"
+Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «<code>гпт, как правильно сварить яйцо?</code>»
 """
     await update.message.reply_text(help_text)
 
@@ -50,11 +50,11 @@ async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Start a new chat session."""
     init_msg = await update.message.reply_text(
-        text="Starting new chat session...",
+        text="Забываю предыдущий контекст...",
         reply_to_message_id=update.message.message_id,
     )
     new_chat(context)
-    await init_msg.edit_text("New chat session started.")
+    await init_msg.edit_text("Новая сессия начата, предыдущий контекст забыт.")
 
 
 # Define the function that will handle incoming messages
