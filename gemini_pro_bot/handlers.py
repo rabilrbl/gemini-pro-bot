@@ -35,14 +35,14 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_text = """
-<b>Основные команды:</b>
+**Основные команды:**
 /start — запустить бота
 /help — получить помощь. Показывает это сообщение
 
-<b>Команды чата:</b>
+**Команды чата:**
 /new — начать новую сессию чата (модель забудет предыдущий контекст).
 
-Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «<code>гпт, как правильно сварить яйцо?</code>»
+Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «```гпт, как правильно сварить яйцо?```»
 """
     await update.message.reply_text(help_text)
 
