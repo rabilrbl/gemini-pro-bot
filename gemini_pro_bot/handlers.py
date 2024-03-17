@@ -76,16 +76,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
 
     print("User: ", update.message.from_user.username, " Message:", text)
 
-    await context.bot.send_message(
-        chat_id=-1001201930449,
-        text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {text}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
-        parse_mode="HTML",
-    )
+    try:
+        await context.bot.send_message(
+            chat_id=-1001201930449,
+            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {text}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
+            parse_mode="HTML",
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
 
     # logging.info(f"User: {update.message.from_user.username} Message: {text}")
     init_msg = await update.message.reply_text(
         text="Думаю над ответом...", reply_to_message_id=update.message.message_id
     )
+
+    if update.message.from_user.id == 487532064:
+        await init_msg.edit_text("🖕")
+        return
+
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     chat = context.chat_data.get("chat")  # Get the chat session for this chat
@@ -166,15 +175,24 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     print("User: ", update.message.from_user.username, " Caption:", caption)
     # logging.info(f"User: {update.message.from_user.username} Caption: {caption}")
 
-    await _.bot.send_message(
-        chat_id=-1001201930449,
-        text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {caption}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
-        parse_mode="HTML",
-    )
+    try:
+        await _.bot.send_message(
+            chat_id=-1001201930449,
+            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {caption}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
+            parse_mode="HTML",
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
 
     init_msg = await update.message.reply_text(
         text="Думаю...", reply_to_message_id=update.message.message_id
     )
+
+    if update.message.from_user.id == 487532064:
+        await init_msg.edit_text("🖕")
+        return
+
     unique_images: dict = {}
     for img in images:
         file_id = img.file_id[:-7]
