@@ -92,7 +92,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     )
 
     if update.message.from_user.id == 487532064:
-        await init_msg.edit_text("🖕")
+        await init_msg.edit_text("-")
         return
 
     await update.message.chat.send_action(ChatAction.TYPING)
@@ -190,7 +190,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
     if update.message.from_user.id == 487532064:
-        await init_msg.edit_text("🖕")
+        await init_msg.edit_text("-")
         return
 
     unique_images: dict = {}
