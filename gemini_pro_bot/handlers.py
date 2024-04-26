@@ -95,9 +95,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await init_msg.edit_text("-")
         return
 
-    if update.message.from_user.id == 314254772:
-        await init_msg.edit_text("пошёл нахуй, чертила ебаный")
-        return
+    # if update.message.from_user.id == 314254772:
+    #     await init_msg.edit_text("пошёл нахуй, чертила ебаный")
+    #     return
 
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
