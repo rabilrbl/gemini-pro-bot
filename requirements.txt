@@ -2,7 +2,7 @@ anyio==4.3.0
 cachetools==5.3.3
 certifi==2024.2.2
 charset-normalizer==3.3.2
-google-ai-generativelanguage==0.4.0
+google-ai-generativelanguage
 google-api-core==2.18.0
 google-auth==2.29.0
 google-generativeai==0.5.2
