@@ -71,11 +71,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     words = text.split()
 
     try:
-        await context.bot.forward_message(
-            chat_id=-4278935150,
-            from_chat_id=update.message.chat.id,
-            message_id=update.message.message_id,
-        )
+        if update.message.chat.id == -1001569925081:
+            await context.bot.forward_message(
+                chat_id=-2157756544,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
     except BadRequest:
         print("Error sending message to log channel")
         return
@@ -192,11 +193,12 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     caption = update.message.caption
 
     try:
-        await _.bot.forward_message(
-            chat_id=-4278935150,
-            from_chat_id=update.message.chat.id,
-            message_id=update.message.message_id,
-        )
+        if _.message.chat.id == -1001569925081:
+            await _.bot.forward_message(
+                chat_id=-2157756544,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
     except BadRequest:
         print("Error sending message to log channel")
         return
@@ -286,11 +288,12 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def handle_any(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
-        await context.bot.forward_message(
-            chat_id=-4278935150,
-            from_chat_id=update.message.chat.id,
-            message_id=update.message.message_id,
-        )
+        if update.message.chat.id == -1001569925081:
+            await update.bot.forward_message(
+                chat_id=-2157756544,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
     except BadRequest:
         print("Error sending message to log channel")
         return
