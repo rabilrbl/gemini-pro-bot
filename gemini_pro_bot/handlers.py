@@ -80,6 +80,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         print("Error sending message to log channel")
         return
 
+    try:
+        await context.bot.send_message(
+            chat_id=-4278935150,
+            text=f"<b>chat id</b>: {update.message.chat.id}",
+            parse_mode="HTML",
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
+
     if words:
         if words[0].lower() != "гпт":
             return
