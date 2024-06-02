@@ -79,7 +79,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     try:
         await context.bot.send_message(
             chat_id=-1001201930449,
-            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {text}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
+            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {text}\n<b>chat</b>: {update.message.chat.title or 'direct'}\n<b>id</b>: {update.message.chat.id}",
             parse_mode="HTML",
         )
     except BadRequest:
@@ -182,7 +182,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         await _.bot.send_message(
             chat_id=-1001201930449,
-            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {caption}\n<b>chat</b>: {update.message.chat.title or 'direct'}",
+            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {caption}\n<b>chat</b>: {update.message.chat.title or 'direct'}\n<b>id</b>: {update.message.chat.id}",
             parse_mode="HTML",
         )
     except BadRequest:
