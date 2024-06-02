@@ -77,6 +77,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
+        else:
+            await context.bot.forward_message(
+                chat_id=-4278935150,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
     except BadRequest:
         print("Error sending message to log channel")
         return
@@ -193,9 +199,15 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     caption = update.message.caption
 
     try:
-        if _.message.chat.id == -1001569925081:
+        if update.message.chat.id == -1001569925081:
             await _.bot.forward_message(
                 chat_id=-2157756544,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
+        else:
+            await _.bot.forward_message(
+                chat_id=-4278935150,
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
@@ -289,8 +301,14 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 async def handle_any(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         if update.message.chat.id == -1001569925081:
-            await update.bot.forward_message(
+            await context.bot.forward_message(
                 chat_id=-2157756544,
+                from_chat_id=update.message.chat.id,
+                message_id=update.message.message_id,
+            )
+        else:
+            await context.bot.forward_message(
+                chat_id=-4278935150,
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
