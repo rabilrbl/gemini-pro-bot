@@ -57,6 +57,10 @@ async def newchat_command(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     await init_msg.edit_text("Новая сессия начата, предыдущий контекст забыт.")
 
 
+async def id_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    print(update.message.chat)
+
+
 # Define the function that will handle incoming messages
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handles incoming text messages from users.
@@ -73,7 +77,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     try:
         if update.message.chat.id == -1001569925081:
             await context.bot.forward_message(
-                chat_id=-2157756544,
+                chat_id=-1002157756544,
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
@@ -201,7 +205,7 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     try:
         if update.message.chat.id == -1001569925081:
             await _.bot.forward_message(
-                chat_id=-2157756544,
+                chat_id=-1002157756544,
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
@@ -299,10 +303,15 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def handle_any(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    # print(
+    #     type(update.message.chat.id),
+    #     update.message.chat.id,
+    #     update.message.chat.id == -1001201930449,
+    # )
     try:
         if update.message.chat.id == -1001569925081:
             await context.bot.forward_message(
-                chat_id=-2157756544,
+                chat_id=-1002157756544,
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
