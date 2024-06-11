@@ -126,10 +126,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await init_msg.edit_text("-")
         return
 
-    if update.message.from_user.id == 1625023138:
-        await init_msg.edit_text("-")
-        return
-
     # if update.message.from_user.id == 314254772:
     #     await init_msg.edit_text("пошёл нахуй, чертила ебаный")
     #     return
@@ -246,10 +242,6 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     )
 
     if update.message.from_user.id == 487532064:
-        await init_msg.edit_text("-")
-        return
-
-    if update.message.from_user.id == 1625023138:
         await init_msg.edit_text("-")
         return
 
