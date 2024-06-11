@@ -14,7 +14,6 @@ from gemini_pro_bot.handlers import (
     newchat_command,
     handle_message,
     handle_image,
-    handle_any,
 )
 
 load_dotenv()
@@ -36,7 +35,5 @@ def start_bot() -> None:
 
     # Any image is sent to LLM to generate a response
     application.add_handler(MessageHandler(PhotoFilter, handle_image))
-
-    application.add_handler(MessageHandler(None, handle_any))
     # Run the bot until the user presses Ctrl-C
     application.run_polling(allowed_updates=Update.ALL_TYPES)

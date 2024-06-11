@@ -155,6 +155,8 @@ def apply_exclude_code(text: str) -> str:
     """
     lines = text.split("\n")
     in_code_block = False
+    start_index = None
+    end_index = None
 
     for i, line in enumerate(lines):
         if line.startswith("```"):
@@ -171,6 +173,18 @@ def apply_exclude_code(text: str) -> str:
             formatted_line = apply_monospace(formatted_line)
             formatted_line = apply_hand_points(formatted_line)
             lines[i] = formatted_line
+
+    for i, line in enumerate(lines):
+        if line.startswith("👉"):
+            if start_index is None:
+                start_index = i
+            end_index = i
+        elif start_index is not None:
+            break
+
+    if start_index is not None and end_index is not None:
+        lines[start_index] = "<blockquote expandable>" + lines[start_index]
+        lines[end_index] = lines[end_index] + "</blockquote>"
 
     return "\n".join(lines)
 

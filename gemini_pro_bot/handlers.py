@@ -27,23 +27,24 @@ async def start(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
     await update.message.reply_html(
-        f"Привет, {user.mention_html()}!\n\nОтправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «гпт, как правильно сварить яйцо?»\n\nОтправьте /help, чтобы получить помощь.",
-        # reply_markup=ForceReply(selective=True),
+        f"Привет, {user.mention_html()}!\n\n"
+        "Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ.\n"
+        "Например: «гпт, как правильно сварить яйцо?»\n\n"
+        "Отправьте /help, чтобы получить помощь.",
     )
 
 
 async def help_command(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /help is issued."""
     help_text = """
-<b>Основные команды:</b>
-/start — запустить бота
-/help — получить помощь. Показывает это сообщение
-
-<b>Команды чата:</b>
-/new — начать новую сессию чата (модель забудет предыдущий контекст).
-
-Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. Например: «<code>гпт как правильно сварить яйцо?</code>»
-"""
+                    <b>Основные команды:</b>
+                    /start — запустить бота
+                    /help — получить помощь. Показывает это сообщение
+                    <b>Команды чата:</b>
+                    /new — начать новую сессию чата (модель забудет предыдущий контекст).
+                    Отправьте сообщение боту начиная со слова «гпт», чтобы сгенерировать ответ. 
+                    Например: «<code>гпт как правильно сварить яйцо?</code>»
+                """
     await update.message.reply_html(help_text)
 
 
@@ -61,19 +62,14 @@ async def id_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None
     print(update.message.chat)
 
 
-# Define the function that will handle incoming messages
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handles incoming text messages from users.
-
-    Checks if a chat session exists for the user, initializes a new session if not.
-    Sends the user's message to the chat session to generate a response.
-    Streams the response back to the user, handling any errors.
-    """
-    if context.chat_data.get("chat") is None:
-        new_chat(context)
+async def log_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    user = update.message.from_user
     text = update.message.text
-    words = text.split()
-
+    full_name, username = user.full_name, user.username,
+    print(
+        f"User: {full_name} (@{username})\n"
+        f"Message: {text}"
+    )
     try:
         if update.message.chat.id == -1001569925081:
             await context.bot.forward_message(
@@ -87,37 +83,44 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                 from_chat_id=update.message.chat.id,
                 message_id=update.message.message_id,
             )
-    except BadRequest:
-        print("Error sending message to log channel")
-        return
-
-    try:
         await context.bot.send_message(
             chat_id=-4278935150,
             text=f"<b>chat id</b>: {update.message.chat.id}",
             parse_mode="HTML",
         )
-    except BadRequest:
-        print("Error sending message to log channel")
-        return
-
-    if words:
-        if words[0].lower() != "гпт":
-            return
-
-    print("User: ", update.message.from_user.username, " Message:", text)
-
-    try:
         await context.bot.send_message(
             chat_id=-1001201930449,
-            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {text}\n<b>chat</b>: {update.message.chat.title or 'direct'}\n<b>id</b>: {update.message.chat.id}",
+            text=f"<b>user</b>: {full_name} @{username}\n"
+                 f"<b>message</b>: {text}\n"
+                 f"<b>chat</b>: {update.message.chat.title or 'direct'}\n"
+                 f"<b>id</b>: {update.message.chat.id}",
             parse_mode="HTML",
         )
-    except BadRequest:
-        print("Error sending message to log channel")
+    except Exception as e:
+        print(f"Error sending message to log channel {e}")
+
+
+# Define the function that will handle incoming messages
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Handles incoming text messages from users.
+
+    Checks if a chat session exists for the user, initializes a new session if not.
+    Sends the user's message to the chat session to generate a response.
+    Streams the response back to the user, handling any errors.
+    """
+    if context.chat_data.get("chat") is None:
+        new_chat(context)
+
+    text = update.message.text
+
+    await log_message(update, context)
+
+    if not text.lower().startswith("гпт") and (
+            update.message.reply_to_message
+            and update.message.reply_to_message.from_user.id == context.bot.id
+    ):
         return
 
-    # logging.info(f"User: {update.message.from_user.username} Message: {text}")
     init_msg = await update.message.reply_text(
         text="Думаю над ответом...", reply_to_message_id=update.message.message_id
     )
@@ -133,7 +136,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     await update.message.chat.send_action(ChatAction.TYPING)
     # Generate a response using the text-generation pipeline
     chat = context.chat_data.get("chat")  # Get the chat session for this chat
-    clean_text = text.replace("гпт", "").strip()
+    clean_text = text[3:] if text.lower().startswith("гпт") else text
     response = None
     try:
         response = await chat.send_message_async(
@@ -166,17 +169,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
                     disable_web_page_preview=True,
                 )
         except StopCandidateException as sce:
+            print(sce)
             await init_msg.edit_text("The model unexpectedly stopped generating.")
             chat.rewind()  # Rewind the chat session to prevent the bot from getting stuck
             continue
-        except BadRequest:
+        except BadRequest as sce:
+            print(sce)
+            await init_msg.edit_text("The model unexpectedly stopped generating.")
             await response.resolve()  # Resolve the response to prevent the chat session from getting stuck
             continue
         except NetworkError:
+            await init_msg.edit_text("Looks like you're network is down. Please try again later.")
             raise NetworkError(
                 "Looks like you're network is down. Please try again later."
             )
         except IndexError:
+            await init_msg.edit_text("Some index error occurred. This response is not supported.")
+
             await init_msg.reply_text(
                 "Some index error occurred. This response is not supported."
             )
@@ -184,6 +193,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
             continue
         except Exception as e:
             print(e)
+            await init_msg.edit_text("?")
             if chunk.text:
                 full_plain_message = chunk.text
                 message = format_message(full_plain_message)
@@ -197,44 +207,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
         await asyncio.sleep(0.1)
 
 
-async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
+async def handle_image(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle incoming images with captions and generate a response."""
     images = update.message.photo
     caption = update.message.caption
 
-    try:
-        if update.message.chat.id == -1001569925081:
-            await _.bot.forward_message(
-                chat_id=-1002157756544,
-                from_chat_id=update.message.chat.id,
-                message_id=update.message.message_id,
-            )
-        else:
-            await _.bot.forward_message(
-                chat_id=-4278935150,
-                from_chat_id=update.message.chat.id,
-                message_id=update.message.message_id,
-            )
-    except BadRequest:
-        print("Error sending message to log channel")
-        return
+    await log_message(update, context)
 
-    if caption == None:
-        return
-    elif caption.split()[0].lower() != "гпт":
-        return
-
-    print("User: ", update.message.from_user.username, " Caption:", caption)
-    # logging.info(f"User: {update.message.from_user.username} Caption: {caption}")
-
-    try:
-        await _.bot.send_message(
-            chat_id=-1001201930449,
-            text=f"<b>user</b>: @{update.message.from_user.username}\n<b>message</b>: {caption}\n<b>chat</b>: {update.message.chat.title or 'direct'}\n<b>id</b>: {update.message.chat.id}",
-            parse_mode="HTML",
-        )
-    except BadRequest:
-        print("Error sending message to log channel")
+    if caption is None or (not caption.lower().startswith("гпт") and (
+            update.message.reply_to_message
+            and update.message.reply_to_message.from_user.id == context.bot.id
+    )):
         return
 
     init_msg = await update.message.reply_text(
@@ -255,9 +238,8 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
     file_list = list(unique_images.values())
     file = await file_list[0].get_file()
     a_img = load_image.open(BytesIO(await file.download_as_bytearray()))
-    prompt = None
-    if update.message.caption.lower() != "гпт":
-        prompt = update.message.caption.replace("гпт", "").strip()
+    if caption.lower() != "гпт":
+        prompt = caption[3:]
     else:
         # prompt = "Изучи данное изображение или фотографию и предоставь детальный анализ, описывающий его содержание, контекст и возможные варианты интерпретации. Обрати внимание на элементы композиции, цветовую палитру, эмоциональную атмосферу и любые другие заметные особенности. Твой ответ должен быть структурированным и содержательным, а также включать в себя ваше собственное творческое понимание изображения. Отвечай только на русском языке."
         prompt = "Изучи данное изображение или фотографию и напиши подробный текстовый описательный анализ этого изображения, используя русский язык. Укажи, что изображено на картинке, какие цвета и формы преобладают, какое настроение или атмосфера создаются. Если на изображении есть люди, животные или предметы, опиши их внешний вид, действия и взаимоотношения, где сделана фотография и так далее. Твой ответ должен быть структурированным и содержательным. Не пиши свое мнение или оценку изображения, а только факты и детали."
@@ -300,27 +282,3 @@ async def handle_image(update: Update, _: ContextTypes.DEFAULT_TYPE) -> None:
                     disable_web_page_preview=True,
                 )
         await asyncio.sleep(0.1)
-
-
-async def handle_any(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    # print(
-    #     type(update.message.chat.id),
-    #     update.message.chat.id,
-    #     update.message.chat.id == -1001201930449,
-    # )
-    try:
-        if update.message.chat.id == -1001569925081:
-            await context.bot.forward_message(
-                chat_id=-1002157756544,
-                from_chat_id=update.message.chat.id,
-                message_id=update.message.message_id,
-            )
-        else:
-            await context.bot.forward_message(
-                chat_id=-4278935150,
-                from_chat_id=update.message.chat.id,
-                message_id=update.message.message_id,
-            )
-    except BadRequest:
-        print("Error sending message to log channel")
-        return
