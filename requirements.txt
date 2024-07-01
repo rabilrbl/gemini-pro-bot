@@ -5,7 +5,7 @@ charset-normalizer==3.3.2
 google-ai-generativelanguage
 google-api-core==2.19.0
 google-auth==2.30.0
-google-generativeai==0.6.0
+google-generativeai==0.7.1
 googleapis-common-protos==1.63.2
 grpcio==1.64.1
 grpcio-status==1.60.0
