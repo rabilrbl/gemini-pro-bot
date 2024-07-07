@@ -4,7 +4,7 @@ certifi==2024.6.2
 charset-normalizer==3.3.2
 google-ai-generativelanguage
 google-api-core==2.19.0
-google-auth==2.30.0
+google-auth==2.31.0
 google-generativeai==0.7.1
 googleapis-common-protos==1.63.2
 grpcio==1.64.1
